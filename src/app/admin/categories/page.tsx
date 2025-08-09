@@ -1,8 +1,9 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
+import type { Category } from '@prisma/client'  // ⬅ add this
 
 export default async function AdminCategories() {
-  const cats = await prisma.category.findMany({ orderBy: { createdAt: 'desc' } })
+  const cats: Category[] = await prisma.category.findMany({ orderBy: { createdAt: 'desc' } }) // ⬅ type it
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
@@ -10,7 +11,7 @@ export default async function AdminCategories() {
         <Link className="bg-brand text-white px-3 py-2 rounded-lg" href="/admin/categories/new">New</Link>
       </div>
       <div className="space-y-2">
-        {cats.map(c => (
+        {cats.map((c: Category) => (   // ⬅ type the param
           <div key={c.id} className="flex items-center justify-between border rounded-lg p-3">
             <div>
               <div className="font-medium">{c.name}</div>

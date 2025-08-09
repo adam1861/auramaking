@@ -1,9 +1,14 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import { formatMoney } from '@/lib/pricing'
+import type { Product, Category } from '@prisma/client'   // ⬅ add types
+
+type ProductWithCategory = Product & { category: Category }  // ⬅ helper type
 
 export default async function AdminProducts() {
-  const products = await prisma.product.findMany({ include: { category: true }, orderBy: { createdAt: 'desc' } })
+  const products: ProductWithCategory[] = await prisma.product.findMany({
+    include: { category: true }, orderBy: { createdAt: 'desc' }
+  })
   return (
     <section className="space-y-4">
       <div className="flex items-center justify-between">
@@ -11,7 +16,7 @@ export default async function AdminProducts() {
         <Link className="bg-brand text-white px-3 py-2 rounded-lg" href="/admin/products/new">New</Link>
       </div>
       <div className="space-y-2">
-        {products.map(p => (
+        {products.map((p: ProductWithCategory) => (  // ⬅ type the param
           <div key={p.id} className="grid md:grid-cols-4 items-center border rounded-lg p-3 gap-2">
             <div className="font-medium">{p.name}</div>
             <div className="text-sm text-gray-500">{p.category.name}</div>
